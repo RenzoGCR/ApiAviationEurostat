@@ -1,0 +1,37 @@
+### 1. Prueba pública (GET) - Debería funcionar para todos (Status 200)
+GET http://localhost:8080/api/aviation/all
+Accept: application/json
+
+### 2. Prueba POST sin usuario - Debería fallar (Status 401 Unauthorized)
+POST http://localhost:8080/api/aviation/search/advanced
+Content-Type: application/json
+
+{
+  "countries": ["ES"],
+  "timeStart": "2025-01",
+  "timeEnd": "2025-03"
+}
+
+### 3. Prueba POST con usuario "user" - Debería ser PROHIBIDO (Status 403 Forbidden)
+# El usuario "user" existe, pero no tiene rol ADMIN, así que Spring Security lo rechaza.
+POST http://localhost:8080/api/aviation/search/advanced
+Authorization: Basic user password
+Content-Type: application/json
+
+{
+  "countries": ["ES"],
+  "timeStart": "2025-01",
+  "timeEnd": "2025-03"
+}
+
+### 4. Prueba POST con usuario "admin" - Debería FUNCIONAR (Status 200 OK)
+# El usuario "admin" tiene rol ADMIN, así que tiene permiso.
+POST http://localhost:8080/api/aviation/search/advanced
+Authorization: Basic admin admin123
+Content-Type: application/json
+
+{
+  "countries": ["ES"],
+  "timeStart": "2025-01",
+  "timeEnd": "2025-03"
+}

@@ -9,10 +9,21 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 
+/**
+ * Manejador global de excepciones para la aplicación.
+ * Intercepta las excepciones lanzadas por los controladores y devuelve respuestas de error estandarizadas.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. Manejo de error 400 (Bad Request) - Para validaciones como las fechas
+    /**
+     * Maneja excepciones de tipo {@link InvalidRequestException}.
+     * Devuelve un error 400 Bad Request cuando la solicitud contiene datos inválidos.
+     *
+     * @param ex la excepción capturada.
+     * @param request la solicitud web actual.
+     * @return una respuesta {@link ResponseEntity} con los detalles del error.
+     */
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ErrorResponseDTO> handleInvalidRequest(InvalidRequestException ex, WebRequest request) {
         ErrorResponseDTO errorDTO = new ErrorResponseDTO(
@@ -25,7 +36,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
     }
 
-    // 2. Manejo de error 404 (Not Found) - Para cuando no encuentras el país/dato
+    /**
+     * Maneja excepciones de tipo {@link CountryNotFoundException}.
+     * Devuelve un error 404 Not Found cuando no se encuentran datos para un país específico.
+     *
+     * @param ex la excepción capturada.
+     * @param request la solicitud web actual.
+     * @return una respuesta {@link ResponseEntity} con los detalles del error.
+     */
     @ExceptionHandler(CountryNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleCountryNotFound(CountryNotFoundException ex, WebRequest request) {
         ErrorResponseDTO errorDTO = new ErrorResponseDTO(
@@ -38,7 +56,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDTO, HttpStatus.NOT_FOUND);
     }
 
-    // (Opcional) Manejo global para cualquier otro error no controlado (500)
+    /**
+     * Maneja cualquier otra excepción no controlada específicamente.
+     * Devuelve un error 500 Internal Server Error.
+     *
+     * @param ex la excepción capturada.
+     * @param request la solicitud web actual.
+     * @return una respuesta {@link ResponseEntity} con los detalles del error genérico.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGlobalException(Exception ex, WebRequest request) {
         ErrorResponseDTO errorDTO = new ErrorResponseDTO(

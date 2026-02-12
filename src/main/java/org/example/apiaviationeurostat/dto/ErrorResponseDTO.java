@@ -5,12 +5,35 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * Objeto de Transferencia de Datos (DTO) para representar respuestas de error estandarizadas.
+ * Se utiliza para devolver información detallada sobre errores ocurridos en la API.
+ */
 @Data
 @AllArgsConstructor
 public class ErrorResponseDTO {
-    private LocalDateTime timestamp; // Cuándo ocurrió
-    private int status;              // Código HTTP (404, 400, 500)
-    private String error;            // Tipo de error (ej: "Not Found")
-    private String message;          // Mensaje para humanos (ej: "El país XX no existe")
-    private String path;             // Endpoint llamado
+    /**
+     * Marca de tiempo de cuándo ocurrió el error.
+     */
+    private LocalDateTime timestamp;
+
+    /**
+     * Código de estado HTTP asociado al error (ej. 404, 400, 500).
+     */
+    private int status;
+
+    /**
+     * Descripción breve del tipo de error (ej. "Not Found").
+     */
+    private String error;
+
+    /**
+     * Mensaje detallado y legible para el usuario sobre la causa del error.
+     */
+    private String message;
+
+    /**
+     * La ruta del endpoint donde se originó el error.
+     */
+    private String path;
 }

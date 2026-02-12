@@ -10,12 +10,23 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Implementación personalizada del repositorio de aviación.
+ * Proporciona métodos para realizar búsquedas complejas utilizando {@link MongoTemplate}.
+ */
 @Repository
 public class AviationRepositoryImpl implements AviationRepositoryCustom{
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /**
+     * Busca registros de aviación basándose en múltiples criterios de filtrado.
+     * Construye una consulta dinámica dependiendo de los campos presentes en el DTO.
+     *
+     * @param filter el objeto {@link AviationFilterDTO} con los criterios de búsqueda.
+     * @return una lista de {@link AviationRecord} que coinciden con los filtros.
+     */
     @Override
     public List<AviationRecord> searchByFilters(AviationFilterDTO filter) {
         Query query = new Query();
