@@ -1,5 +1,6 @@
 package org.example.apiaviationeurostat.controllers;
 
+import org.example.apiaviationeurostat.dto.AviationFilterDTO;
 import org.example.apiaviationeurostat.entities.AviationRecord;
 import org.example.apiaviationeurostat.services.AviationService;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,16 @@ public class AviationController {
             @RequestParam(defaultValue = "TOTAL") String type) {
 
         List<AviationRecord> results = aviationService.geByCountryandType(country, type);
+        return ResponseEntity.ok(results);
+    }
+
+    @PostMapping("/search/advanced")
+    public ResponseEntity<List<AviationRecord>> searchAdvanced(@RequestBody AviationFilterDTO filterDTO) {
+        List<AviationRecord> results = aviationService.getByAdvancedFilter(filterDTO);
+
+        if(results.isEmpty()){
+            return ResponseEntity.noContent().build(); // Devuelve 204 si no hay coincidencias
+        }
         return ResponseEntity.ok(results);
     }
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AviationRepository extends MongoRepository<AviationRecord, String> {
+public interface AviationRepository extends MongoRepository<AviationRecord, String> , AviationRepositoryCustom{
     // Buscar por país (geo)
     List<AviationRecord> findByGeo(String geo);
 

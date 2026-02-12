@@ -1,6 +1,8 @@
 package org.example.apiaviationeurostat.services;
 
+import org.example.apiaviationeurostat.dto.AviationFilterDTO;
 import org.example.apiaviationeurostat.entities.AviationRecord;
+import org.example.apiaviationeurostat.exceptions.InvalidRequestException;
 import org.example.apiaviationeurostat.repositories.AviationRepository;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +51,23 @@ public class AviationService {
     // 5. Buscar top pasajeros (mayor a X)
     public List<AviationRecord> getTopPassengers(Long value){
         return repository.findByValueGreaterThan(value);
+    }
+
+    public List<AviationRecord> getByAdvancedFilter(AviationFilterDTO filter) {
+        // 2. VALIDACIÓN: Fecha Inicio < Fecha Fin
+        // Como el formato es "YYYY-MM", la comparación de Strings (lexicográfica) funciona perfectamente.
+        if (filter.getTimeStart() != null && filter.getTimeEnd() != null) {
+            // compareTo devuelve > 0 si timeStart es "mayor" (posterior) a timeEnd
+            if (filter.getTimeStart().compareTo(filter.getTimeEnd()) > 0) {
+                throw new InvalidRequestException(
+                        "Rango de fechas inválido: La fecha de inicio (" + filter.getTimeStart() +
+                                ") no puede ser posterior a la fecha de fin (" + filter.getTimeEnd() + ")"
+                );
+            }
+        }
+
+        // 3. Si pasa la validación, llamamos al repositorio personalizado
+        return repository.searchByFilters(filter);
     }
 
 }
