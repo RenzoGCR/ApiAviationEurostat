@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vuelos Eurostat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">✈️ Aviation Eurostat</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="/vuelos">Lista de Vuelos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/vuelos/top">🌟 Top Vuelos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/buscar">Búsqueda Avanzada</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5 mb-5">
+
+    <div th:if="${error}" class="alert alert-danger shadow-sm" role="alert" th:text="${error}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-secondary" th:text="${tituloPie != null ? tituloPie : 'Listado de Pasajeros Mensuales'}"></h2>
+        <span class="badge bg-info text-dark" th:text="'Total registros: ' + ${#lists.size(vuelos)}">Total: 0</span>
+    </div>
+
+    <div class="table-responsive shadow bg-white rounded">
+        <table id="tablaVuelos" class="table table-striped table-hover align-middle mb-0">
+            <thead class="table-dark">
+            <tr>
+                <th scope="col" class="text-center">País (Geo)</th>
+                <th scope="col" class="text-center">Mes (Time)</th>
+                <th scope="col" class="text-end pe-4">Pasajeros (Value)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vuelo : ${vuelos}">
+                <td class="text-start fw-bold ps-4">
+                    <a th:href="@{/vuelos/pais/{geo}(geo=${vuelo.geo})}"
+                       class="text-decoration-none text-primary fs-6 d-flex align-items-center gap-2"
+                       title="Ver detalle del país">
+
+                        <img th:src="@{'https://flagcdn.com/w20/' + ${utils.obtenerCodigoBandera(vuelo.geo)} + '.png'}"
+                             alt="Bandera" class="border rounded" width="25">
+
+                        <span th:text="${utils.obtenerNombrePais(vuelo.geo)}">España</span>
+
+                        <span class="text-muted" style="font-size: 0.85em;" th:text="'(' + ${vuelo.geo} + ')'">(ES)</span>
+                    </a>
+                </td>
+
+                <td class="text-center" th:text="${vuelo.time}">2025-01</td>
+                <td class="text-end pe-4" th:text="${#numbers.formatInteger(vuelo.value, 0, 'POINT')}">1000</td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(vuelos)}">
+                <td colspan="3" class="text-center text-muted py-4">
+                    <i>No hay vuelos registrados en la base de datos actualmente.</i>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#tablaVuelos').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+            },
+            //Solucion al error de Thymeleaf: añadir espacios entre los corchetes: [ [ ... ] ]
+            "order": [ [ 2, "desc" ] ],
+            "pageLength": 10
+        });
+    });
+</script>
+
+</body>
+</html>

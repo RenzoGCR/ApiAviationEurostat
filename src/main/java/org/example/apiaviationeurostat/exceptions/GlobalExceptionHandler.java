@@ -7,13 +7,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import org.springframework.web.bind.annotation.RestController;
+
 import java.time.LocalDateTime;
 
 /**
  * Manejador global de excepciones para la aplicación.
  * Intercepta las excepciones lanzadas por los controladores y devuelve respuestas de error estandarizadas.
  */
-@ControllerAdvice
+@ControllerAdvice(annotations = RestController.class)
 public class GlobalExceptionHandler {
 
     /**

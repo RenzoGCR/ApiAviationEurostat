@@ -48,11 +48,22 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        //APIsREST
                         .requestMatchers(HttpMethod.GET, "/api/aviation/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/aviation/**").hasRole("ADMIN")
+                        //Web MVC (rutas HTML)
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/vuelos").permitAll()
+                        .requestMatchers("/vuelos/pais/**").permitAll()
+                        .requestMatchers("/vuelos/top").permitAll()
+                        .requestMatchers("/error").permitAll()
+
+                        //Ruta Protegida
+                        .requestMatchers("/buscar").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults());
+                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }

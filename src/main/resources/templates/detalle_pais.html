@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Detalle de ' + ${nombrePais}">Detalle del País</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">✈️ Aviation Eurostat</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/vuelos">Lista de Vuelos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/vuelos/top">🌟 Top Vuelos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/buscar">Búsqueda Avanzada</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5 mb-5">
+    <a href="/vuelos" class="btn btn-outline-secondary mb-4">← Volver al listado</a>
+
+    <div class="card shadow-sm border-primary mb-4">
+        <div class="card-body bg-white text-center">
+            <h2 class="text-primary mb-0 d-flex justify-content-center align-items-center gap-3">
+                <img th:src="@{'https://flagcdn.com/w40/' + ${codigoBandera} + '.png'}"
+                     alt="Bandera"
+                     class="shadow-sm border rounded"
+                     width="45">
+
+                <span>
+                        Historial de Vuelos:
+                        <span th:text="${nombreCompleto}" class="fw-bold text-dark">España</span>
+                        <span class="text-muted fs-5" th:text="'(' + ${nombrePais} + ')'">(ES)</span>
+                    </span>
+            </h2>
+            <p class="text-muted mt-2 mb-0" th:text="'Se han encontrado ' + ${#lists.size(vuelos)} + ' registros para este país.'"></p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <canvas id="graficoPasajeros" height="100"></canvas>
+        </div>
+    </div>
+
+    <div class="table-responsive shadow bg-white rounded">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead class="table-dark">
+            <tr>
+                <th class="text-center">Mes (Time)</th>
+                <th class="text-end pe-4">Pasajeros (Value)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vuelo : ${vuelos}">
+                <td class="text-center fw-bold" th:text="${vuelo.time}">2025-01</td>
+                <td class="text-end pe-4" th:text="${#numbers.formatInteger(vuelo.value, 0, 'POINT')}">1000</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // 1. Recibimos la lista de vuelos desde el controlador de Java
+    var vuelosData = /*[[${vuelos}]]*/ [];
+
+    // 2. Ordenamos los datos cronológicamente (por el mes/time) para que la línea tenga sentido
+    vuelosData.sort((a, b) => a.time.localeCompare(b.time));
+
+    // 3. Extraemos las etiquetas (Meses) y los valores (Pasajeros)
+    var etiquetas = vuelosData.map(v => v.time);
+    var valores = vuelosData.map(v => v.value);
+    var nombrePais = /*[[${nombreCompleto}]]*/ 'País';
+
+    // 4. Dibujamos el gráfico
+    var ctx = document.getElementById('graficoPasajeros').getContext('2d');
+    new Chart(ctx, {
+        type: 'line', // Gráfico de líneas
+        data: {
+            labels: etiquetas,
+            datasets: [{
+                label: 'Pasajeros mensuales en ' + nombrePais,
+                data: valores,
+                borderColor: '#0d6efd', // Color azul Bootstrap
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                borderWidth: 3,
+                tension: 0.3, // Curvas suaves
+                fill: true,
+                pointBackgroundColor: '#0d6efd'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: { beginAtZero: false } // No empezar en 0 para ver mejor las variaciones
+            }
+        }
+    });
+    /*]]>*/
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
