@@ -21,14 +21,15 @@
         }
 
         /* 2. Tarjeta central del Login */
-        .login-card {
-            background-color: #151a23 !important;
-            border: 1px solid #1f232e !important;
+        .dashboard-card, .table-container, .card, .login-card {
+            background-color: rgba(21, 26, 35, 0.5) !important; /* Gris oscuro semi-transparente */
+            backdrop-filter: blur(16px); /* El efecto cristal principal */
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08) !important; /* Borde muy sutil para dar brillo */
             border-radius: 16px !important;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 420px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); /* Sombra flotante */
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         /* 3. Inputs de formulario */

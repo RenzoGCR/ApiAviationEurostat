@@ -11,15 +11,18 @@
     <style>
         /* 1. Fondo general (Estilo RevenueX) */
         body {
-            background-color: #0b0e14 !important;
+            background: radial-gradient(circle at top left, #1a2540 0%, #0b0e14 80%) !important;
+            background-attachment: fixed !important;
             color: #ffffff !important;
             font-family: 'Inter', sans-serif;
         }
 
         /* 2. Barra de navegación */
         .navbar {
-            background-color: #0b0e14 !important;
-            border-bottom: 1px solid #1f232e;
+            background-color: rgba(11, 14, 20, 0.6) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         .navbar-brand { color: #ffffff !important; font-weight: 600; }
         .nav-link { color: #8a94a6 !important; transition: color 0.2s; }
@@ -28,11 +31,14 @@
 
         /* 3. Tarjetas y contenedores (Fondo secundario oscuro) */
         .dashboard-card, .table-container, .card {
-            background-color: #151a23 !important;
-            border: 1px solid #1f232e !important;
+            background-color: rgba(21, 26, 35, 0.5) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
             border-radius: 16px !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         .card-body { padding: 0 !important; } /* Ajuste porque el dashboard-card ya tiene padding */
 

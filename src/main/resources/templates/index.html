@@ -11,15 +11,19 @@
     <style>
         /* 1. Fondo general */
         body {
-            background-color: #0b0e14 !important;
+            /* Un destello azul muy oscuro arriba a la izquierda que se difumina a negro */
+            background: radial-gradient(circle at top left, #1a2540 0%, #0b0e14 80%) !important;
+            background-attachment: fixed !important; /* Para que el fondo no se mueva al hacer scroll */
             color: #ffffff !important;
             font-family: 'Inter', sans-serif;
         }
 
         /* 2. Barra de navegación */
         .navbar {
-            background-color: #0b0e14 !important;
-            border-bottom: 1px solid #1f232e;
+            background-color: rgba(11, 14, 20, 0.6) !important; /* Semi-transparente */
+            backdrop-filter: blur(12px); /* Desenfoque */
+            -webkit-backdrop-filter: blur(12px); /* Para Safari */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         .navbar-brand { color: #ffffff !important; font-weight: 600; }
         .nav-link { color: #8a94a6 !important; transition: color 0.2s; }
@@ -27,11 +31,14 @@
         .nav-link.active { color: #2563eb !important; font-weight: 600; }
 
         /* 3. Tarjetas del Dashboard (El secreto del diseño premium) */
-        .dashboard-card {
-            background-color: #151a23 !important; /* Gris muy oscuro */
-            border: 1px solid #1f232e !important;
+        .dashboard-card, .table-container, .card, .login-card {
+            background-color: rgba(21, 26, 35, 0.5) !important; /* Gris oscuro semi-transparente */
+            backdrop-filter: blur(16px); /* El efecto cristal principal */
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08) !important; /* Borde muy sutil para dar brillo */
             border-radius: 16px !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); /* Sombra flotante */
+            padding: 1.5rem;
             transition: transform 0.2s, box-shadow 0.2s;
         }
         /* Pequeño efecto al pasar el ratón por las tarjetas */
