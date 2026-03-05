@@ -132,4 +132,10 @@ public class AviationWebController {
         if (geo.equals("EU27_2020")) return "eu";
         return geo.toLowerCase(); // FlagCDN requiere minúsculas (ej: "es", "at")
     }
+
+    @GetMapping("/login")
+    public String mostrarLogin() {
+        return "login"; // Buscará el archivo login.html
+    }
+
 }

@@ -1,84 +1,206 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búsqueda Avanzada</title>
+    <title>Búsqueda Avanzada - Aviation Eurostat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <style>
+        /* 1. Fondo general (Estilo RevenueX) */
+        body {
+            background-color: #0b0e14 !important;
+            color: #ffffff !important;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* 2. Barra de navegación */
+        .navbar {
+            background-color: #0b0e14 !important;
+            border-bottom: 1px solid #1f232e;
+        }
+        .navbar-brand { color: #ffffff !important; font-weight: 600; }
+        .nav-link { color: #8a94a6 !important; transition: color 0.2s; }
+        .nav-link:hover { color: #ffffff !important; }
+        .nav-link.active { color: #2563eb !important; font-weight: 600; }
+
+        /* 3. Contenedores y Tarjetas */
+        .dashboard-card, .table-container {
+            background-color: #151a23 !important;
+            border: 1px solid #1f232e !important;
+            border-radius: 16px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 1.5rem;
+        }
+
+        /* 4. Estilos de Formulario (Dark UI Premium) */
+        .form-label {
+            color: #e2e8f0;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .form-control {
+            background-color: #0b0e14 !important;
+            border: 1px solid #1f232e !important;
+            color: #ffffff !important;
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            transition: all 0.2s;
+        }
+        .form-control:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1) !important;
+        }
+        /* Para cambiar el color del icono del calendario en type="month" */
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.6;
+            cursor: pointer;
+        }
+        ::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+        .form-text, .text-muted { color: #8a94a6 !important; }
+        .border-bottom { border-bottom-color: #1f232e !important; }
+
+        /* 5. Botones */
+        .btn-primary {
+            background-color: #2563eb !important;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #3b82f6 !important;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-outline-secondary {
+            background-color: transparent !important;
+            color: #8a94a6 !important;
+            border: 1px solid #1f232e !important;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #1f232e !important;
+            color: #ffffff !important;
+        }
+
+        /* 6. Estilos de la Tabla (Limpia) */
+        .table { color: #e2e8f0 !important; border-color: #1f232e !important; margin-bottom: 0; }
+        .table>thead { background-color: transparent !important; }
+        .table>thead>tr>th {
+            color: #8a94a6 !important;
+            border-bottom: 1px solid #1f232e !important;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding-bottom: 1rem;
+        }
+        .table>tbody>tr>td {
+            border-bottom: 1px solid #1f232e !important;
+            padding: 1rem 0.5rem;
+            background-color: transparent !important;
+        }
+        .table>tbody>tr:hover>td { background-color: rgba(255, 255, 255, 0.03) !important; }
+
+        h2.text-secondary { color: #ffffff !important; font-weight: 600; letter-spacing: -0.5px; }
+        .text-primary { color: #60a5fa !important; } /* Azul más claro para los enlaces del país en la tabla */
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
     <div class="container">
-        <a class="navbar-brand" href="#">✈️ Aviation Eurostat</a>
+        <a class="navbar-brand" href="/">✈️ Aviation Eurostat</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/vuelos">Lista de Vuelos</a></li>
-                <li class="nav-item"><a class="nav-link" href="/vuelos/top">Top Vuelos</a></li>
+            <ul class="navbar-nav ms-auto align-items-center"> <li class="nav-item"><a class="nav-link" href="/vuelos">Lista de Vuelos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/vuelos/top">🌟 Top Vuelos</a></li>
                 <li class="nav-item"><a class="nav-link active" href="/buscar">Búsqueda Avanzada</a></li>
+
+                <li class="nav-item ms-lg-3 mt-2 mt-lg-0" sec:authorize="isAuthenticated()">
+                    <a class="btn btn-outline-danger btn-sm px-3" href="/logout" style="border-radius: 6px;">Cerrar Sesión</a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
 
 <div class="container mt-5 mb-5">
-    <h2 class="text-secondary mb-4">Búsqueda Avanzada de Vuelos</h2>
-
-    <div th:if="${error}" class="alert alert-danger shadow-sm" role="alert" th:text="${error}"></div>
-    <div th:if="${mensajeExito}" class="alert alert-success shadow-sm" role="alert" th:text="${mensajeExito}"></div>
-
-    <div class="card shadow-sm mb-5">
-        <div class="card-body bg-white">
-            <form th:action="@{/buscar}" th:object="${filtro}" method="post" class="row g-3">
-
-                <div class="col-md-4">
-                    <label class="form-label fw-bold">Fecha Inicio (YYYY-MM)</label>
-                    <input type="text" class="form-control" th:field="*{timeStart}" placeholder="Ej: 2024-01">
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label fw-bold">Fecha Fin (YYYY-MM)</label>
-                    <input type="text" class="form-control" th:field="*{timeEnd}" placeholder="Ej: 2025-01">
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label fw-bold">Mínimo de Pasajeros</label>
-                    <input type="number" class="form-control" th:field="*{minPassengers}" placeholder="Ej: 500000">
-                </div>
-
-                <div class="col-12 text-end mt-4">
-                    <button type="reset" class="btn btn-outline-secondary me-2">Limpiar</button>
-                    <button type="submit" class="btn btn-primary px-4">🔍 Buscar</button>
-                </div>
-            </form>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-secondary mb-0">Búsqueda Avanzada de Vuelos</h2>
     </div>
 
-    <div th:if="${vuelos != null}" class="table-responsive shadow bg-white rounded">
-        <table class="table table-striped table-hover align-middle mb-0">
-            <thead class="table-dark">
+    <div th:if="${error}" class="alert alert-danger shadow-sm border-0 rounded-3" role="alert" th:text="${error}"></div>
+    <div th:if="${mensajeExito}" class="alert alert-success shadow-sm border-0 rounded-3" role="alert" th:text="${mensajeExito}"></div>
+
+    <div class="dashboard-card mb-5">
+        <form th:action="@{/buscar}" th:object="${filtro}" method="post" class="row g-3">
+
+            <div class="col-12 mb-3">
+                <p class="text-muted small border-bottom pb-3 mb-0">
+                    <i class="fw-bold text-light">Nota:</i> La base de datos de Eurostat contiene registros desde el año <strong>09/2024</strong> hasta <strong>12/2025</strong>.
+                </p>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Mes de Inicio</label>
+                <input type="month" class="form-control" th:field="*{timeStart}" min="2024-09" max="2025-12">
+                <div class="form-text mt-2">Selecciona a partir de qué mes buscar.</div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Mes de Fin</label>
+                <input type="month" class="form-control" th:field="*{timeEnd}" min="2024-09" max="2025-12">
+                <div class="form-text mt-2">Selecciona el mes límite.</div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Mínimo de Pasajeros</label>
+                <input type="number" class="form-control" th:field="*{minPassengers}" placeholder="Ej: 500000" min="0">
+                <div class="form-text mt-2">Filtra por volumen de tráfico.</div>
+            </div>
+
+            <div class="col-12 text-end mt-4 pt-2 border-top border-dark">
+                <a href="/buscar" class="btn btn-outline-secondary me-3 px-4">Limpiar</a>
+                <button type="submit" class="btn btn-primary px-5">🔍 Buscar</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${vuelos != null}" class="table-container table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
             <tr>
-                <th class="text-center">País</th>
-                <th class="text-center">Mes</th>
-                <th class="text-end pe-4">Pasajeros</th>
+                <th class="text-center">País (Geo)</th>
+                <th class="text-center">Mes (Time)</th>
+                <th class="text-end pe-4">Pasajeros (Value)</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="vuelo : ${vuelos}">
                 <td class="text-center fw-bold text-primary" th:text="${vuelo.geo}"></td>
-                <td class="text-center" th:text="${vuelo.time}"></td>
-                <td class="text-end pe-4" th:text="${#numbers.formatInteger(vuelo.value, 0, 'POINT')}"></td>
+                <td class="text-center text-light" th:text="${vuelo.time}"></td>
+                <td class="text-end pe-4 fw-medium text-light" th:text="${#numbers.formatInteger(vuelo.value, 0, 'POINT')}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(vuelos)}">
-                <td colspan="3" class="text-center text-muted py-4">No se encontraron resultados para estos filtros.</td>
+                <td colspan="3" class="text-center text-muted py-5">
+                    <i>No se encontraron resultados para los filtros aplicados.</i>
+                </td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

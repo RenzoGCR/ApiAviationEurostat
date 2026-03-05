@@ -63,7 +63,17 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults());
+                // Para usar un Login personalizado (login.html)
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/buscar", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                );
 
         return http.build();
     }
