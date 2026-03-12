@@ -3,14 +3,10 @@ package org.example.apiaviationeurostat.controllers;
 import org.example.apiaviationeurostat.services.AviationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.example.apiaviationeurostat.dto.AviationFilterDTO;
 import org.example.apiaviationeurostat.exceptions.InvalidRequestException;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Map;
 
@@ -139,7 +135,7 @@ public class AviationWebController {
     }
 
     @PostMapping("/buscar/ia")
-    public String procesarBusquedaIA(String consultaIA, Model model) {
+    public String procesarBusquedaIA(@RequestParam("consultaIA") String consultaIA, Model model) {
         try {
             // 1. El Servicio traduce el texto a un DTO usando IA
             AviationFilterDTO filtroInteligente = aviationService.createFilterFromNaturalLanguage(consultaIA);
