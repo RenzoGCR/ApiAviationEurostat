@@ -138,4 +138,31 @@ public class AviationWebController {
         return "login"; // Buscará el archivo login.html
     }
 
+    @PostMapping("/buscar/ia")
+    public String procesarBusquedaIA(String consultaIA, Model model) {
+        try {
+            // 1. El Servicio traduce el texto a un DTO usando IA
+            AviationFilterDTO filtroInteligente = aviationService.createFilterFromNaturalLanguage(consultaIA);
+
+            // 2. Reutilizamos tu método de búsqueda avanzada clásica con el nuevo DTO
+            var resultados = aviationService.getByAdvancedFilter(filtroInteligente);
+
+            // 3. Devolvemos los datos a la vista
+            model.addAttribute("vuelos", resultados);
+            model.addAttribute("filtro", filtroInteligente); // Para que el formulario se rellene solo mostrando lo que la IA entendió
+            model.addAttribute("mensajeExito", "✨ ¡Llama 3 ha procesado tu petición! Se encontraron " + resultados.size() + " registros.");
+
+        } catch (InvalidRequestException e) {
+            // Capturamos el error de validación de fechas de tu servicio
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("filtro", new AviationFilterDTO());
+        } catch (Exception e) {
+            // Capturamos cualquier otro error (ej. Llama 3 apagado)
+            model.addAttribute("error", "Hubo un problema procesando la IA: Asegúrate de que Llama 3 está en ejecución.");
+            model.addAttribute("filtro", new AviationFilterDTO());
+        }
+
+        return "busqueda";
+    }
+
 }

@@ -149,6 +149,31 @@
     <div th:if="${error}" class="alert alert-danger shadow-sm border-0 rounded-3" role="alert" th:text="${error}"></div>
     <div th:if="${mensajeExito}" class="alert alert-success shadow-sm border-0 rounded-3" role="alert" th:text="${mensajeExito}"></div>
 
+    <div class="dashboard-card mb-4" style="border: 1px solid rgba(37, 99, 235, 0.4) !important; background: linear-gradient(145deg, rgba(21, 26, 35, 0.7) 0%, rgba(37, 99, 235, 0.1) 100%) !important;">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <span style="font-size: 2rem;">✨</span>
+            <div>
+                <h4 class="mb-0" style="font-weight: 600; color: #60a5fa !important;">Asistente de IA (Llama 3)</h4>
+                <p class="text-muted small mb-0">Escribe lo que necesitas y la Inteligencia Artificial buscará por ti.</p>
+            </div>
+        </div>
+
+        <form th:action="@{/buscar/ia}" method="post">
+            <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                <input type="text" class="form-control form-control-lg border-0" name="consultaIA"
+                       placeholder="Ej: Búscame vuelos de Alemania entre enero y marzo de 2025"
+                       required style="background-color: rgba(11, 14, 20, 0.8) !important; color: #ffffff;">
+                <button type="submit" class="btn btn-primary px-4 fw-bold">Preguntar a la IA</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="d-flex align-items-center mb-4 mt-4">
+        <hr class="flex-grow-1" style="border-color: rgba(255,255,255,0.1);">
+        <span class="mx-3 text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">O usa los filtros manuales</span>
+        <hr class="flex-grow-1" style="border-color: rgba(255,255,255,0.1);">
+    </div>
+
     <div class="dashboard-card mb-5">
         <form th:action="@{/buscar}" th:object="${filtro}" method="post" class="row g-3">
 

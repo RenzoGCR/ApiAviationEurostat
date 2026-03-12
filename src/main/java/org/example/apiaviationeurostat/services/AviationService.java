@@ -15,14 +15,17 @@ import java.util.List;
 @Service
 public class AviationService {
     private final AviationRepository repository;
+    private final LLMService llmService;
+
 
     /**
      * Constructor para inyectar el repositorio de aviación.
      *
      * @param repository el repositorio de datos.
      */
-    public AviationService(AviationRepository repository) {
+    public AviationService(AviationRepository repository, LLMService llmService) {
         this.repository = repository;
+        this.llmService = llmService;
     }
 
     /**
@@ -112,6 +115,33 @@ public class AviationService {
 
         // 3. Si pasa la validación, llamamos al repositorio personalizado
         return repository.searchByFilters(filter);
+    }
+
+    /**
+     * Usa Inteligencia Artificial para traducir lenguaje natural a un filtro de búsqueda.
+     */
+    public AviationFilterDTO createFilterFromNaturalLanguage(String text) {
+        // 1. LLamamos a Llama 3
+        LLMService.FiltroIA filtroIA = llmService.extraerFiltrosDeTexto(text);
+
+        // 2. Mapeamos la respuesta al DTO oficial de tu aplicación
+        AviationFilterDTO dto = new AviationFilterDTO();
+
+        // A. Convertimos el String geo de la IA en una List<String> para tu DTO
+        if (filtroIA.geo() != null && !filtroIA.geo().trim().isEmpty()) {
+            dto.setCountries(java.util.List.of(filtroIA.geo()));
+        }
+
+        // B. Las fechas coinciden exactamente en formato (String)
+        dto.setTimeStart(filtroIA.timeStart());
+        dto.setTimeEnd(filtroIA.timeEnd());
+
+        // C. Convertimos el Integer de la IA al Long que espera tu base de datos
+        if (filtroIA.minPassengers() != null) {
+            dto.setMinPassengers(filtroIA.minPassengers().longValue());
+        }
+
+        return dto;
     }
 
 }
